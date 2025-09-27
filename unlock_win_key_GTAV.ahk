@@ -2,15 +2,17 @@
 #Requires AutoHotkey v2.0
 
 AppTitle := "WIN-key Unlocker for GTAV"
-version := "1.0.0"
+version := "1.0.1"
 
-A_TrayMenu.Add()  ; Creates a separator line.
-A_TrayMenu.Add("Show Info", OpenInfoPage)  ; Creates a new menu item.
+
+; # Tray buttons
+
+A_TrayMenu.Add()
+A_TrayMenu.Add("Show Info", OpenInfoPage)
 Persistent
-
-OpenInfoPage(ItemName, ItemPos, MyMenu) {
+OpenInfoPage(ItemName := "", ItemPos := "", MyMenu := "") {
     MsgBox(""
-        . "* This is a compiled (via ahk2exe) AHKv2 script`n"
+        . "* This is a compiled (via ahk2exe) AutoHotKey v2 script`n"
         . "  * And it compiled by reason of detecting it by GTA:O anti-cheat system that causes disconnect from online sessions, when it's saved as usual .ahk-script.`n`n"
 
         . "* It fixes the WIN-key in the game GTAV (because in Rockstar Games Launcher - this function doesn't works)`n"
@@ -19,14 +21,34 @@ OpenInfoPage(ItemName, ItemPos, MyMenu) {
 
         . "* This is done to facilitate exiting the game window if the `"Start`" menu is needed immediately`n"
         . "  * With this ahk, you can simply press WIN-key instead of having to use ALT+TAB every time.`n`n"
-        . " !!!BY THE WAY!!!, you can CTRL+C in this window to copy all of this window content`n`n"
+        . " By the way, you can double-click tray icon to open this menu`n`n"
         . "Author: N3M1X10`n"
-        . "Version: " . Version,
+        . "Version: " . version,
         AppTitle . " : Info", "Iconi"
         )
 }
+; Double clicks handler
+OnMessage(0x404, TrayEvent)
+TrayEvent(wParam, lParam, msg, hwnd) {
+    if (lParam = 0x203) { ; WM_LBUTTONDBLCLK
+        OpenInfoPage()
+    }
+}
 
 
+; Discord button
+A_TrayMenu.Add("Open Discord", OpenDiscord)
+OpenDiscord(ItemName := "", ItemPos := "", MyMenu := "") {
+    Run "https://discord.gg/2jJ3Qn4"
+}
+
+; Github button
+A_TrayMenu.Add("Open Github", OpenGithub)
+OpenGithub(ItemName := "", ItemPos := "", MyMenu := "") {
+    Run "https://github.com/N3M1X10/unlock_win_key_GTAV"
+}
+
+; on start message
 Result := MsgBox(""
     . AppTitle . " has been launched`n`n"
     . "* OK - leave the script running (it will auto-selected in 5 sec)`n"
@@ -35,7 +57,7 @@ Result := MsgBox(""
     AppTitle, "OkCancel T5 Iconi"
     )
 if Result = "Cancel" {
-    MsgBox("You pressed `"Cancel`"`n`nScript was interrupted!!", AppTitle, "T1 Iconi")
+    MsgBox("You pressed `"Cancel`"`n`nScript was interrupted!!", AppTitle, "T1 Iconx")
     ExitApp
 }
 if Result = "Timeout" {
@@ -43,7 +65,7 @@ if Result = "Timeout" {
 }
 
 
-; нажатие Win
+; pressing LWin key
 LWin:: {
     ; predefined window names array
     gameWindows := [
@@ -69,7 +91,7 @@ LWin:: {
     }
 }
 
-; отпускание Win
+; release LWin
 LWin Up:: {
     Send("{Blind}{LWin up}")
 }
